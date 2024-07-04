@@ -31,7 +31,41 @@ body {
     text-wrap: balance;
   }
 
-  .selected {
+  .node {
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+  }
+
+  .node:hover {
+    background-color: theme('colors.gray.400');
+  }
+
+  .node.selected {
     background-color: theme('colors.purple.200');
+  }
+
+  .node.selected .node {
+    background-color: theme('colors.purple.100');
+  }
+
+  .tree-list {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  .tree-list ul {
+    margin-left: 1rem;
+    padding-left: 1rem;
+    border-left: 1px solid theme('colors.gray.300');
+  }
+  .tree-list ul.selected {
+    background-color: theme('colors.purple.100');
+  }
+
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
   }
 }

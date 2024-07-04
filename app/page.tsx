@@ -9,6 +9,16 @@ interface TreeNode {
   children?: TreeNode[];
 }
 
+const isNodeSelected = (node: TreeNode, selectedNode: TreeNode | null): boolean => {
+  if (node === selectedNode) {
+    return true;
+  }
+  if (node.children) {
+    return node.children.some((childNode) => isNodeSelected(childNode, selectedNode));
+  }
+  return false;
+};
+
 function TreeNode({ node, selectedNode, onSelect, isSelected, onSetSource, onSetTarget }: {
   node: TreeNode;
   selectedNode: TreeNode | null;
@@ -22,37 +32,37 @@ function TreeNode({ node, selectedNode, onSelect, isSelected, onSetSource, onSet
       className={`node ${isSelected ? 'selected' : ''}`}
       onClick={() => onSelect(node)}
     >
-<div className="mb-4">
-  {node.label}
-</div>
-<div className="flex space-x-4">
-  <button
-    className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
-    onClick={() => onSetSource(node)}
-  >
-    <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-      Set as Source
-    </span>
-  </button>
+      <div className="mb-4">
+        {node.label}
+      </div>
+      <div className="flex space-x-4">
+        <button
+          className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
+          onClick={() => onSetSource(node)}
+        >
+          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+            Set as Source
+          </span>
+        </button>
 
-  <button
-    className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
-    onClick={() => onSetTarget(node)}
-  >
-    <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-      Set as Target
-    </span>
-  </button>
-</div>
+        <button
+          className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
+          onClick={() => onSetTarget(node)}
+        >
+          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+            Set as Target
+          </span>
+        </button>
+      </div>
       {node.children && (
-        <ul>
+        <ul className={`ml-8 ${isSelected ? 'selected' : ''}`}>
           {node.children.map((childNode) => (
             <li key={childNode.id || childNode.label}>
               <TreeNode
                 node={childNode}
                 selectedNode={selectedNode}
                 onSelect={onSelect}
-                isSelected={selectedNode === node}
+                isSelected={isNodeSelected(childNode, selectedNode)}
                 onSetSource={onSetSource}
                 onSetTarget={onSetTarget}
               />
@@ -114,8 +124,8 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch the tree data from the API route
-    fetch('/api/data')
+    // Fetch the tree data from the API
+    fetch('https://ubique.img.ly/frontend-tha/data.json')
       .then((res) => res.json())
       .then((data) => setTreeData(data))
       .catch((error) => {
@@ -133,7 +143,7 @@ export default function Home() {
       // Select the node and fetch additional data if it's a leaf node
       setSelectedNode(node);
       if (!node.children) {
-        fetch(`/api/entry/${node.id}`)
+        fetch(`https://ubique.img.ly/frontend-tha/entries/${node.id}.json`)
           .then((res) => {
             if (res.ok) {
               return res.json();
@@ -168,34 +178,46 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h1>Tree Structure</h1>
-      {error && <p className="error">{error}</p>}
-      <ul>
-        {treeData.map((node) => (
-          <li key={node.id || node.label}>
-            <TreeNode
-              node={node}
-              selectedNode={selectedNode}
-              isSelected={selectedNode === node}
-              onSelect={handleNodeClick}
-              onSetSource={setSourceNode}
-              onSetTarget={setTargetNode}
-            />
-          </li>
-        ))}
-      </ul>
-      {additionalData && (
-        <div>
-          <h2>Additional Data</h2>
-          <pre>{JSON.stringify(additionalData, null, 2)}</pre>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Tree Structure</h1>
+      {error && <p className="text-red-500 mb-4">{error}</p>}
+      <div className="flex">
+        <div className="w-1/2">
+          <ul className="tree-list">
+            {treeData.map((node) => (
+              <li key={node.id || node.label}>
+                <TreeNode
+                  node={node}
+                  selectedNode={selectedNode}
+                  isSelected={isNodeSelected(node, selectedNode)}
+                  onSelect={handleNodeClick}
+                  onSetSource={setSourceNode}
+                  onSetTarget={setTargetNode}
+                />
+              </li>
+            ))}
+          </ul>
         </div>
-      )}
-      <div>
-        <h2>Move Node</h2>
-        <p>Source Node: {sourceNode?.label || 'Not selected'}</p>
-        <p>Target Node: {targetNode?.label || 'Not selected'}</p>
-        <button onClick={handleMoveNode} disabled={!sourceNode || !targetNode}>
+        <div className="w-1/2 pl-8">
+          {additionalData && (
+            <div>
+              <h2 className="text-xl font-bold mb-2">Additional Data</h2>
+              <pre className="bg-gray-500 p-4 rounded">{JSON.stringify(additionalData, null, 2)}</pre>
+            </div>
+          )}
+        </div>
+      </div>
+      <div className="mt-8">
+        <h2 className="text-xl font-bold mb-2">Move Node</h2>
+        <div className="mb-4">
+          <p>Source Node: {sourceNode?.label || 'Not selected'}</p>
+          <p>Target Node: {targetNode?.label || 'Not selected'}</p>
+        </div>
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          onClick={handleMoveNode}
+          disabled={!sourceNode || !targetNode}
+        >
           Move Node
         </button>
       </div>
