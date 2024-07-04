@@ -30,4 +30,8 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  .selected {
+    background-color: theme('colors.purple.200');
+  }
 }
