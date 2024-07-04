@@ -2,125 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import './globals.css';
-
-interface TreeNode {
-  id?: string;
-  label: string;
-  children?: TreeNode[];
-}
-
-const isNodeSelected = (node: TreeNode, selectedNode: TreeNode | null): boolean => {
-  if (node === selectedNode) {
-    return true;
-  }
-  if (node.children) {
-    return node.children.some((childNode) => isNodeSelected(childNode, selectedNode));
-  }
-  return false;
-};
-
-function TreeNode({ node, selectedNode, onSelect, isSelected, onSetSource, onSetTarget }: {
-  node: TreeNode;
-  selectedNode: TreeNode | null;
-  onSelect: (node: TreeNode) => void;
-  isSelected: boolean;
-  onSetSource: (node: TreeNode) => void;
-  onSetTarget: (node: TreeNode) => void;
-}) {
-  return (
-    <div
-      className={`node ${isSelected ? 'selected' : ''}`}
-      onClick={() => onSelect(node)}
-    >
-      <div className="mb-4">
-        {node.label}
-      </div>
-      <div className="flex space-x-4">
-        <button
-          className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800"
-          onClick={() => onSetSource(node)}
-        >
-          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-            Set as Source
-          </span>
-        </button>
-
-        <button
-          className="relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-pink-500 to-orange-400 group-hover:from-pink-500 group-hover:to-orange-400 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-pink-200 dark:focus:ring-pink-800"
-          onClick={() => onSetTarget(node)}
-        >
-          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-            Set as Target
-          </span>
-        </button>
-      </div>
-      {node.children && (
-        <ul className={`ml-8 ${isSelected ? 'selected' : ''}`}>
-          {node.children.map((childNode) => (
-            <li key={childNode.id || childNode.label}>
-              <TreeNode
-                node={childNode}
-                selectedNode={selectedNode}
-                onSelect={onSelect}
-                isSelected={isNodeSelected(childNode, selectedNode)}
-                onSetSource={onSetSource}
-                onSetTarget={onSetTarget}
-              />
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-const moveNode = (sourceNode: TreeNode, targetNode: TreeNode, treeData: TreeNode[]): TreeNode[] => {
-  const newTreeData = [...treeData];
-
-  // Find the source node and remove it from its parent
-  const findAndRemoveNode = (nodes: TreeNode[]): TreeNode | undefined => {
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i] === sourceNode) {
-        return nodes.splice(i, 1)[0];
-      }
-      if (nodes[i].children) {
-        const foundNode = findAndRemoveNode(nodes[i].children!);
-        if (foundNode) {
-          return foundNode;
-        }
-      }
-    }
-  };
-
-  const removedNode = findAndRemoveNode(newTreeData);
-
-  // Find the target node and add the source node as its child
-  const findAndAddNode = (nodes: TreeNode[]) => {
-    for (let i = 0; i < nodes.length; i++) {
-      if (nodes[i] === targetNode) {
-        if (!nodes[i].children) {
-          nodes[i].children = [];
-        }
-        nodes[i].children!.push(removedNode!);
-        return;
-      }
-      if (nodes[i].children) {
-        findAndAddNode(nodes[i].children!);
-      }
-    }
-  };
-
-  findAndAddNode(newTreeData);
-
-  return newTreeData;
-};
+import { TreeNode as TreeNodeType } from './../lib/types';
+import { isNodeSelected, moveNode } from './../lib/utils';
+import { TreeNode } from './../components/TreeNode';
 
 export default function Home() {
-  const [treeData, setTreeData] = useState<TreeNode[]>([]);
-  const [selectedNode, setSelectedNode] = useState<TreeNode | null>(null);
+  const [treeData, setTreeData] = useState<TreeNodeType[]>([]);
+  const [selectedNode, setSelectedNode] = useState<TreeNodeType | null>(null);
   const [additionalData, setAdditionalData] = useState<any>(null);
-  const [sourceNode, setSourceNode] = useState<TreeNode | null>(null);
-  const [targetNode, setTargetNode] = useState<TreeNode | null>(null);
+  const [sourceNode, setSourceNode] = useState<TreeNodeType | null>(null);
+  const [targetNode, setTargetNode] = useState<TreeNodeType | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -134,7 +25,7 @@ export default function Home() {
       });
   }, []);
 
-  const handleNodeClick = (node: TreeNode) => {
+  const handleNodeClick = (node: TreeNodeType) => {
     if (selectedNode === node) {
       // Deselect the node if it's already selected
       setSelectedNode(null);
