@@ -1,6 +1,6 @@
 # Tree Structure Visualization and Manipulation
 
-> A node tree is a data structure that consists of nodes connected in a hierarchical manner. Each node can have zero or more child nodes, forming a parent-child relationship. The topmost node is called the root node, and nodes without any child nodes are called leaf nodes. This structure allows for efficient representation and traversal of hierarchical data.
+> A node tree is a data structure that consists of nodes connected in a hierarchical manner. Each node can have zero or more child nodes, forming a parent-child relationship. The topmost node is called the root node, and nodes without any child nodes are called leaf nodes. This structure allows for efficient representation of hierarchical data.
 
 - Tree structure visualization and manipulation application using Next.js, TypeScript, and React. 
 - This tool provides a user-friendly way to explore, analyze, and modify complex tree structures. It enable users to get insights into the hierarchical relationships within the data and perform transformations with ease.
@@ -60,20 +60,19 @@ If the selected node is a leaf node (i.e., it has no children), the `fetchAdditi
 
 ### Moving Nodes within the Tree Structure
 
-The application provides a UI for moving nodes within the tree structure. Users are able to select a source node and a target node using the "Set as Source" and "Set as Target" buttons. When the "Move Node" button is clicked, the `handleMoveNode` function in `app/page.tsx` is called. It invokes the `moveNode` function from `app/lib/utils.ts`, which removes the source node and its subtree from its current position and adds it as a child of the target node. The updated tree structure is then logged to the console.
+The application provides a UI for moving nodes within the tree structure. Users can select a source node and a target node using the "Set as Source" and "Set as Target" buttons. When the "Move Node" button is clicked, the `handleMoveNode` function in `app/page.tsx` is called. It invokes the `moveNode` function from `app/lib/utils.ts`, which removes the source node and its subtree from its current position and adds it as a child of the target node. The updated tree structure is then logged to the console.
 
 ## Error Handling
 
-We implemented error handling for failed data fetching and node movement operations. If an error occurs during data fetching or node movement, an error message is displayed to the user, and the application state is updated accordingly.
+The application includes error handling for failed data fetching and node movement operations. If an error occurs during data fetching or node movement, an error message is displayed to the user, and the application state is updated accordingly.
 
 ## UI and Styling
 
-Our application uses Tailwind CSS for styling and layout. The tree nodes, buttons, and additional data display are styled using utility classes and custom CSS classes defined in the `globals.css` file. The UI is responsive and provides a user-friendly experience for interacting with the tree structure.
+The application uses Tailwind CSS for styling and layout. The tree nodes, buttons, and additional data display are styled using utility classes and custom CSS classes defined in the `globals.css` file. The UI is responsive and provides a user-friendly experience for interacting with the tree structure.
 
 ## Testing
 
 [WIP] The project includes unit tests for the utility functions in `app/lib/utils.ts`. The tests are located in `app/lib/tests/utils.test.ts` and can be run using the `npm test` or `yarn test`command. The tests cover scenarios such as node selection and node movement to ensure the correctness of the tree manipulation logic.
-
 
 ## Field for Improvement
 
