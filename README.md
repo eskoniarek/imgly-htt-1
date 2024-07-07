@@ -60,21 +60,32 @@ If the selected node is a leaf node (i.e., it has no children), the `fetchAdditi
 
 ### Moving Nodes within the Tree Structure
 
-The application provides a UI for moving nodes within the tree structure. Users can select a source node and a target node using the "Set as Source" and "Set as Target" buttons. When the "Move Node" button is clicked, the `handleMoveNode` function in `app/page.tsx` is called. It invokes the `moveNode` function from `app/lib/utils.ts`, which removes the source node and its subtree from its current position and adds it as a child of the target node. The updated tree structure is then logged to the console.
+The application provides a UI for moving nodes within the tree structure. Users are able to select a source node and a target node using the "Set as Source" and "Set as Target" buttons. When the "Move Node" button is clicked, the `handleMoveNode` function in `app/page.tsx` is called. It invokes the `moveNode` function from `app/lib/utils.ts`, which removes the source node and its subtree from its current position and adds it as a child of the target node. The updated tree structure is then logged to the console.
 
 ## Error Handling
 
-The application includes error handling for failed data fetching and node movement operations. If an error occurs during data fetching or node movement, an error message is displayed to the user, and the application state is updated accordingly.
+We implemented error handling for failed data fetching and node movement operations. If an error occurs during data fetching or node movement, an error message is displayed to the user, and the application state is updated accordingly.
 
 ## UI and Styling
 
-The application uses Tailwind CSS for styling and layout. The tree nodes, buttons, and additional data display are styled using utility classes and custom CSS classes defined in the `globals.css` file. The UI is responsive and provides a user-friendly experience for interacting with the tree structure.
+Our application uses Tailwind CSS for styling and layout. The tree nodes, buttons, and additional data display are styled using utility classes and custom CSS classes defined in the `globals.css` file. The UI is responsive and provides a user-friendly experience for interacting with the tree structure.
 
 ## Testing
 
 [WIP] The project includes unit tests for the utility functions in `app/lib/utils.ts`. The tests are located in `app/lib/tests/utils.test.ts` and can be run using the `npm test` or `yarn test`command. The tests cover scenarios such as node selection and node movement to ensure the correctness of the tree manipulation logic.
 
 
+## Field for Improvement
+
+While the current implementation provides a solid foundation for tree structure visualization and manipulation, there are plenty areas where improvements can be made to increace performance, scalability, and user experience. Here are some suggestions for further development (not limited by the expected time commitment):
+
+1. **Optimizing Recursive Patterns**: The recursive patterns used in the `findNode`, `removeNode`, and `addNode` functions in `utils.ts` can be optimized to improve performance, especially when dealing with large tree structures. We will consider exploring more efficient algorithms or data structures to handle recursive operations effectively.
+
+2. **Assigning Unique IDs**: Instead of modifying the entire tree data structure when moving nodes, we would consider assigning unique IDs to each node and maintaining an additional data structure that represents the order of the nodes. Mentioned approach allows for updating the order without modifying the entire tree, which can be more efficient and less error-prone.
+
+3. **Handling Deeper Nesting Levels**: To be sure that the code can easily accommodate adding another level of children without significant modifications. The recursive patterns should be flexible enough to handle deeper nesting levels seamlessly.
+
+4. **Extracting Button Components**: We will move the rendering logic for the "Set as Source" and "Set as Target" buttons in `TreeNode.tsx` into separate components. This improves code readability, reusability, and maintainability.
 
 
 Feel free to explore the code and provide any feedback or suggestions for improvement.
